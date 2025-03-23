@@ -10,71 +10,120 @@ class AddMessageController extends Controller
 {
     public function setMsg(Request $request)
     {
-        $name = $request->name;
-        $phone = $request->phone;
-        $city = $request->city;
-        $loe = $request->loe;
-        $title_id = $request->title_id;
-        $reporter_id = $request->reporter_id;
-        $message = $request->message;
-        $files = $request->files;
-
-        $create_date = jdate();
-
-        // return dd($files);
-
-        // if ($files != null) {
-        //     $year = substr($create_date, 0, 4);
-        //     $month = substr($create_date, 5, 2);
-
-        //     $filesPath = "";
-        //     $path = 'atachments/' . $year . '/' . $month . '/';
-        //     // return count($files);
-        // } else {
-            $filesPath = 'N/A';
-        // }
-
-        if ($filesPath != null) {
-
-            $newRecord = DB::table('crs_msg')
-                ->insertGetId([
-                    'name' => $name,
-                    'phone' => $phone ?? "null",
-                    'city' => $city ?? "null",
-                    'loe' => $loe ?? "null",
-                    'files_path' => $filesPath,
-                    'title_id' => $title_id ?? 0,
-                    'reporter_id' => $reporter_id ?? 0,
-                    'message' => $message,
-                    'create_at' => $create_date
-                ]);
-
-            if ($newRecord != null) {
-                return response()->json([
-                    'status' => '1',
-                    'message' => 'پیام شما با موفقیت ثبت شد.',
-                    'data' => $newRecord
-                ]);
-                // return $message = array(
-                //     'status' => '1',
-                //     'message' => 'پیام شما با موفقیت ثبت شد.',
-                //     'data' => $newRecord
-                // );
-            } else {
-                return response()->json([
-                    'status' => '2',
-                    'message' => 'خطایی در ثبت اطلاعات رخ داده. لطفا بعدا امتحان کنید.',
-                    'data' => null
-                ]);
+        // دریافت داده‌ها از درخواست
+        $name = $request->input('name');
+        $phone = $request->input('phone', "null");
+        $city = $request->input('city', "null");
+        $loe = $request->input('loe', "null");
+        $title_id = $request->input('title_id', 0);
+        $reporter_id = $request->input('reporter_id', 0);
+        $message = $request->input('message');
+        $create_date = now(); // استفاده از زمان فعلی
+    
+        // ذخیره فایل‌ها و دریافت مسیرهای ذخیره شده
+        $filesPaths = [];
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $path = $file->store('uploads/messages', 'public'); // ذخیره در storage/app/public/uploads/messages
+                $filesPaths[] = $path;
             }
+        }
+    
+        // ذخیره اطلاعات در دیتابیس
+        $newRecord = DB::table('crs_msg')->insertGetId([
+            'name' => $name,
+            'phone' => $phone,
+            'city' => $city,
+            'loe' => $loe,
+            'files_path' => json_encode($filesPaths), // ذخیره مسیر فایل‌ها در دیتابیس
+            'title_id' => $title_id,
+            'reporter_id' => $reporter_id,
+            'message' => $message,
+            'create_at' => $create_date
+        ]);
+    
+        // بررسی وضعیت ذخیره‌سازی
+        if ($newRecord) {
+            return response()->json([
+                'status' => '1',
+                'message' => 'پیام شما با موفقیت ثبت شد.',
+                'data' => $newRecord
+            ]);
         } else {
             return response()->json([
-                'status' => '3',
-                'message' => 'خطایی در آپلود فایل پیوست رخ داده. لطفا بعدا امتحان کنید.',
-                'data' => $filesPath
+                'status' => '2',
+                'message' => 'خطایی در ثبت اطلاعات رخ داده. لطفا بعدا امتحان کنید.',
+                'data' => null
             ]);
         }
     }
+    
+
+
+
+
+    // public function setMsg(Request $request)
+    // {
+    //     $name = $request->name;
+    //     $phone = $request->phone;
+    //     $city = $request->city;
+    //     $loe = $request->loe;
+    //     $title_id = $request->title_id;
+    //     $reporter_id = $request->reporter_id;
+    //     $message = $request->message;
+    //     $files = $request->files;
+
+    //     $create_date = jdate();
+
+    //     // return dd($files);
+
+    //     // if ($files != null) {
+    //     //     $year = substr($create_date, 0, 4);
+    //     //     $month = substr($create_date, 5, 2);
+
+    //     //     $filesPath = "";
+    //     //     $path = 'atachments/' . $year . '/' . $month . '/';
+    //     //     // return count($files);
+    //     // } else {
+    //         $filesPath = 'N/A';
+    //     // }
+
+    //     if ($filesPath != null) {
+
+    //         $newRecord = DB::table('crs_msg')
+    //             ->insertGetId([
+    //                 'name' => $name,
+    //                 'phone' => $phone ?? "null",
+    //                 'city' => $city ?? "null",
+    //                 'loe' => $loe ?? "null",
+    //                 'files_path' => $filesPath,
+    //                 'title_id' => $title_id ?? 0,
+    //                 'reporter_id' => $reporter_id ?? 0,
+    //                 'message' => $message,
+    //                 'create_at' => $create_date
+    //             ]);
+
+    //         if ($newRecord != null) {
+    //             return response()->json([
+    //                 'status' => '1',
+    //                 'message' => 'پیام شما با موفقیت ثبت شد.',
+    //                 'data' => $newRecord
+    //             ]);
+    //         } else {
+    //             return response()->json([
+    //                 'status' => '2',
+    //                 'message' => 'خطایی در ثبت اطلاعات رخ داده. لطفا بعدا امتحان کنید.',
+    //                 'data' => null
+    //             ]);
+    //         }
+    //     } else {
+    //         return response()->json([
+    //             'status' => '3',
+    //             'message' => 'خطایی در آپلود فایل پیوست رخ داده. لطفا بعدا امتحان کنید.',
+    //             'data' => $filesPath
+    //         ]);
+    //     }
+    // }
 
 
     // Validate the request
