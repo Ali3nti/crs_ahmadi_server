@@ -12,9 +12,9 @@ Route::get('/user', function (Request $request) {
 
 
 Route::namespace("Api")->prefix('')->group(function () {
-    Route::middleware('throttle:3,1')->group(function () {
-        Route::post('new_futures',         [AddMessageController::class,          'newFutures']);
-        Route::get('send_msg',           [AddMessageController::class,          'setMsg']);
-        Route::get('upload_files',        [AddMessageController::class,          'uploadFiles']);
+    Route::middleware('throttle:10,1')->group(function () {
+        // Route::post('new_futures',         [AddMessageController::class,          'newFutures']);
+        Route::post('send_msg',           [AddMessageController::class,          'setMsg']);
+        // Route::get('upload_files',        [AddMessageController::class,          'uploadFiles']);
     });
 });
