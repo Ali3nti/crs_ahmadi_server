@@ -11,14 +11,14 @@ class AddMessageController extends Controller
     public function setMsg(Request $request)
     {
         // دریافت داده‌ها از درخواست
-        $name = $request->input('name');
+        $name = $request->input('name', "null");
         $phone = $request->input('phone', "null");
         $city = $request->input('city', "null");
         $loe = $request->input('loe', "null");
-        $title_id = $request->input('title_id', 0);
-        $reporter_id = $request->input('reporter_id', 0);
+        $title_id = $request->input('title_id', "null");
+        $reporter_id = $request->input('reporter_id', "null");
         $message = $request->input('message');
-        $create_date = now(); // استفاده از زمان فعلی
+        $create_date = jdate(); // استفاده از زمان فعلی
     
         // ذخیره فایل‌ها و دریافت مسیرهای ذخیره شده
         $filesPaths = [];
