@@ -11,13 +11,13 @@ class AddMessageController extends Controller
     public function setMsg(Request $request)
     {
         // دریافت داده‌ها از درخواست
-        $name = $request->input('name', "null");
-        $phone = $request->input('phone', "null");
-        $city = $request->input('city', "null");
-        $loe = $request->input('loe', "null");
-        $title_id = $request->input('title_id', "null");
-        $reporter_id = $request->input('reporter_id', "null");
-        $message = $request->input('message');
+        $name = $request->name;
+        $phone = $request->phone;
+        $city = $request->city;
+        $loe = $request->loe;
+        $title_id = $request->title_id;
+        $reporter_id = $request->reporter_id;
+        $message = $request->message;
         $create_date = jdate(); // استفاده از زمان فعلی
     
         // ذخیره فایل‌ها و دریافت مسیرهای ذخیره شده
@@ -31,13 +31,13 @@ class AddMessageController extends Controller
     
         // ذخیره اطلاعات در دیتابیس
         $newRecord = DB::table('crs_msg')->insertGetId([
-            'name' => $name,
-            'phone' => $phone,
-            'city' => $city,
-            'loe' => $loe,
+            'name' => $name ?? " ",
+            'phone' => $phone ?? " ",
+            'city' => $city  ?? " ",
+            'loe' => $loe  ?? " ",
             'files_path' => json_encode($filesPaths), // ذخیره مسیر فایل‌ها در دیتابیس
-            'title_id' => $title_id,
-            'reporter_id' => $reporter_id,
+            'title_id' => $title_id ?? 0,
+            'reporter_id' => $reporter_id ?? 0,
             'message' => $message,
             'create_at' => $create_date
         ]);
