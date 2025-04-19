@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\DB;
 
 class AddMessageController extends Controller
 {
+    public function testdb(Request $request)
+    {
+        $newRecord = DB::table('crs_msg')->get();
+        return $newRecord;
+    }
     public function setMsg(Request $request)
     {
         // دریافت داده‌ها از درخواست
@@ -19,7 +24,13 @@ class AddMessageController extends Controller
         $reporter_id = $request->reporter_id;
         $message = $request->message;
         $create_date = jdate(); // استفاده از زمان فعلی
-    
+
+        return response()->json([
+            'status' => '1',
+            'message' => 'پیام شما با موفقیت ثبت شد.',
+            'data' => $request->hasFile('files')
+        ]);
+
         // ذخیره فایل‌ها و دریافت مسیرهای ذخیره شده
         $filesPaths = [];
         if ($request->hasFile('files')) {
@@ -28,7 +39,7 @@ class AddMessageController extends Controller
                 $filesPaths[] = $path;
             }
         }
-    
+
         // ذخیره اطلاعات در دیتابیس
         $newRecord = DB::table('crs_msg')->insertGetId([
             'name' => $name ?? " ",
@@ -41,7 +52,7 @@ class AddMessageController extends Controller
             'message' => $message,
             'create_at' => $create_date
         ]);
-    
+
         // بررسی وضعیت ذخیره‌سازی
         if ($newRecord) {
             return response()->json([
@@ -57,7 +68,7 @@ class AddMessageController extends Controller
             ]);
         }
     }
-    
+
 
 
 
