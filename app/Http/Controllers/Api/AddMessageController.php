@@ -25,12 +25,6 @@ class AddMessageController extends Controller
         $message = $request->message;
         $create_date = jdate(); // استفاده از زمان فعلی
 
-        return response()->json([
-            'status' => '1',
-            'message' => 'پیام شما با موفقیت ثبت شد.',
-            'data' => $request->hasFile('files')
-        ]);
-
         // ذخیره فایل‌ها و دریافت مسیرهای ذخیره شده
         $filesPaths = [];
         if ($request->hasFile('files')) {
@@ -47,8 +41,8 @@ class AddMessageController extends Controller
             'city' => $city  ?? " ",
             'loe' => $loe  ?? " ",
             'files_path' => json_encode($filesPaths), // ذخیره مسیر فایل‌ها در دیتابیس
-            'title_id' => $title_id ?? 0,
-            'reporter_id' => $reporter_id ?? 0,
+            'title_id' => $title_id ?? " " ,
+            'reporter_id' => $reporter_id ?? " ",
             'message' => $message,
             'create_at' => $create_date
         ]);
