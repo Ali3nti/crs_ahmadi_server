@@ -25,6 +25,8 @@ class AddMessageController extends Controller
         $message = $request->message;
         $create_date = jdate(); // استفاده از زمان فعلی
 
+        return $title_id . $reporter_id;
+
         // ذخیره فایل‌ها و دریافت مسیرهای ذخیره شده
         $filesPaths = [];
         if ($request->hasFile('files')) {
